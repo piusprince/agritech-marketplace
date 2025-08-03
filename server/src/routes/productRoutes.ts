@@ -51,9 +51,13 @@ const router = Router();
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                 product:
+ *                   example: "Product created successfully"
+ *                 data:
  *                   type: object
  *                   properties:
  *                     id:
@@ -75,6 +79,16 @@ const router = Router();
  *                       format: date-time
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 
 router.post(
@@ -111,14 +125,28 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                 products:
+ *                   example: "Products retrieved successfully"
+ *                 data:
  *                   type: array
  *                   items:
  *                     type: object
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.get("/", getProducts);
 

@@ -42,9 +42,13 @@ const router = Router();
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                 inquiry:
+ *                   example: "Inquiry created successfully"
+ *                 data:
  *                   type: object
  *                   properties:
  *                     id:
@@ -60,6 +64,16 @@ const router = Router();
  *                       format: date-time
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.post(
   "/",
@@ -99,14 +113,28 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
  *                 message:
  *                   type: string
- *                 inquiries:
+ *                   example: "Inquiries retrieved successfully"
+ *                 data:
  *                   type: array
  *                   items:
  *                     type: object
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
  */
 router.get("/:productId", getInquiriesByProduct);
 

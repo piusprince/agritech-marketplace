@@ -11,6 +11,9 @@
  *           type: string
  *         email:
  *           type: string
+ *         role:
+ *           type: string
+ *           enum: [farmer, buyer]
  *         createdAt:
  *           type: string
  *           format: date-time

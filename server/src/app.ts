@@ -21,7 +21,7 @@ app.use(helmet());
 app.use(express.json());
 const allowedOrigins =
   process.env.NODE_ENV === "production"
-    ? ["https://your-production-domain.com"]
+    ? ["https://your-production-domain.com"] // will add after deployment
     : ["http://localhost:3000"];
 
 app.use(

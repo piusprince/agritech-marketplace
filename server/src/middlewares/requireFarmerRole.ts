@@ -9,8 +9,6 @@ export const requireFarmerRole = async (
   next: NextFunction
 ) => {
   try {
-    console.log("req.user:", req.user); // <-- Add this line for debugging
-
     const userId = req.user?.id;
     if (!userId) {
       return res

@@ -139,8 +139,6 @@ router.post(
  *                 message:
  *                   type: string
  */
-router.get("/:productId", getInquiriesByProduct);
-
 /**
  * @openapi
  * /api/inquiries/my-inquiries:
@@ -173,5 +171,7 @@ router.get("/:productId", getInquiriesByProduct);
  *         description: Internal server error
  */
 router.get("/my-inquiries", authMiddleware, requireFarmerRole, getMyInquiries);
+
+router.get("/:productId", getInquiriesByProduct);
 
 export default router;

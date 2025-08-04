@@ -63,7 +63,9 @@ const Header = () => {
                 </Link>
                 <Link to="/auth">
                   <Button className="bg-green-500 hover:bg-green-600 text-black font-medium">
-                    Join as Farmer <ArrowRight className="ml-2 h-4 w-4" />
+                    <span className="hidden sm:inline">Join as Farmer</span>
+                    <span className="sm:hidden">Join</span>
+                    <ArrowRight className="ml-1 sm:ml-2 h-4 w-4" />
                   </Button>
                 </Link>
               </>

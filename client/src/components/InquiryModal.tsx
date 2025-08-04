@@ -59,7 +59,6 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
         inquiryData: formData,
       });
 
-      // Reset form and close modal on success
       setFormData({ buyerEmail: "", message: "" });
       setErrors({});
       onClose();
@@ -75,19 +74,17 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
 
   const handleInputChange = (field: keyof InquiryForm, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
-  // Get farmer name
   const farmerName =
     typeof product.farmer === "string" ? "the farmer" : product.farmer.name;
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
+      <DialogContent className="max-w-md bg-white">
         <DialogHeader>
           <DialogTitle>Contact Farmer</DialogTitle>
           <DialogDescription>
@@ -95,7 +92,6 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        {/* Product Info */}
         <div className="flex items-center space-x-3 p-3 bg-muted rounded-lg">
           {product.imageUrl ? (
             <img
@@ -128,9 +124,7 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
           </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Email Input */}
           <div className="space-y-2">
             <Label htmlFor="email">Your Email</Label>
             <Input
@@ -146,7 +140,6 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
             )}
           </div>
 
-          {/* Message Input */}
           <div className="space-y-2">
             <Label htmlFor="message">Message</Label>
             <textarea

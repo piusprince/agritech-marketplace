@@ -71,7 +71,6 @@ const ProductCard = ({
             </span>
           </div>
 
-          {/* Farmer Info */}
           <div className="flex items-center mb-4">
             <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
               <span className="text-green-600 text-sm font-semibold">
@@ -94,7 +93,6 @@ const ProductCard = ({
         )}
       </Card>
 
-      {/* Inquiry Modal */}
       <InquiryModal
         isOpen={showInquiryModal}
         onClose={() => setShowInquiryModal(false)}

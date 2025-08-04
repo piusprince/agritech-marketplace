@@ -38,3 +38,26 @@ export interface InquiryForm {
   buyerEmail: string;
   message: string;
 }
+
+export interface LoginForm {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}
+
+export interface RegisterForm {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
+  role: "farmer" | "buyer";
+  agreeToTerms: boolean;
+  subscribeNewsletter: boolean;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}

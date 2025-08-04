@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { useCreateInquiry } from "../hooks/useQueries";
 import type { Product, InquiryForm } from "../types";
 import {
@@ -63,11 +64,12 @@ const InquiryModal = ({ isOpen, onClose, product }: InquiryModalProps) => {
       setErrors({});
       onClose();
 
-      // Show success message (you could use a toast library here)
-      alert("Your inquiry has been sent successfully!");
+      toast.success(
+        "Your inquiry has been sent successfully! The farmer will contact you soon."
+      );
     } catch (error) {
       console.error("Failed to send inquiry:", error);
-      alert("Failed to send inquiry. Please try again.");
+      toast.error("Failed to send inquiry. Please try again.");
     }
   };
 

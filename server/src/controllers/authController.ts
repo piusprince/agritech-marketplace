@@ -7,10 +7,7 @@ import { UserRole } from "../constants/userRoles";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { firstName, lastName, name, email, password, role } = req.body;
-
-    // Handle both name formats
-    const fullName = name || `${firstName} ${lastName}`.trim();
+    const { name, email, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -21,7 +18,7 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name: fullName,
+      name,
       email,
       password: hashedPassword,
       createdAt: new Date(),

@@ -28,6 +28,10 @@ const router = Router();
  *                 type: string
  *               password:
  *                 type: string
+ *               role:
+ *                 type: string
+ *                 enum: [farmer, buyer]
+ *                 default: buyer
  *     responses:
  *       201:
  *         description: User registered successfully
@@ -45,15 +49,22 @@ const router = Router();
  *                 data:
  *                   type: object
  *                   properties:
- *                     id:
+ *                     token:
  *                       type: string
- *                     name:
- *                       type: string
- *                     email:
- *                       type: string
- *                     createdAt:
- *                       type: string
- *                       format: date-time
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         role:
+ *                           type: string
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
  *       400:
  *         description: Validation error or user already exists
  *         content:
@@ -135,6 +146,20 @@ router.post(
  *                   properties:
  *                     token:
  *                       type: string
+ *                     user:
+ *                       type: object
+ *                       properties:
+ *                         id:
+ *                           type: string
+ *                         name:
+ *                           type: string
+ *                         email:
+ *                           type: string
+ *                         role:
+ *                           type: string
+ *                         createdAt:
+ *                           type: string
+ *                           format: date-time
  *       400:
  *         description: Invalid credentials or user not found
  *         content:

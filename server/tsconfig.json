@@ -2,6 +2,8 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "esnext",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "sourceMap": true,
     "declaration": true,
     "declarationMap": true,
@@ -17,5 +19,6 @@
     "allowSyntheticDefaultImports": true,
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
 }

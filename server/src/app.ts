@@ -22,7 +22,7 @@ app.use(express.json());
 const allowedOrigins =
   process.env.NODE_ENV === "production"
     ? [
-        "https://your-frontend-domain.com", // e.g., https://farmdirect-frontend.vercel.app
+        "https://agritech-marketplace.vercel.app", // e.g., https://farmdirect-frontend.vercel.app
         "http://localhost:5173",
       ]
     : ["http://localhost:5173"];

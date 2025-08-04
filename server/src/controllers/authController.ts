@@ -3,10 +3,11 @@ import User from "../models/User";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { successResponse, errorResponse } from "../utils/responseHelper";
+import { UserRole } from "../constants/userRoles";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -21,6 +22,7 @@ export const register = async (req: Request, res: Response) => {
       email,
       password: hashedPassword,
       createdAt: new Date(),
+      role: role || UserRole.BUYER,
     });
 
     res.status(201).json(
@@ -28,6 +30,7 @@ export const register = async (req: Request, res: Response) => {
         id: user._id,
         name: user.name,
         email: user.email,
+        role: user.role,
         createdAt: user.createdAt,
       })
     );

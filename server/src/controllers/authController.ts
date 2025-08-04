@@ -8,7 +8,7 @@ import { UserRole } from "../constants/userRoles";
 export const register = async (req: Request, res: Response) => {
   try {
     const { firstName, lastName, name, email, password, role } = req.body;
-    
+
     // Handle both name formats
     const fullName = name || `${firstName} ${lastName}`.trim();
 
@@ -21,7 +21,7 @@ export const register = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      name,
+      name: fullName,
       email,
       password: hashedPassword,
       createdAt: new Date(),
@@ -41,7 +41,7 @@ export const register = async (req: Request, res: Response) => {
           email: user.email,
           role: user.role,
           createdAt: user.createdAt,
-        }
+        },
       })
     );
   } catch (error) {
@@ -69,16 +69,18 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "1d",
     });
 
-    res.status(200).json(successResponse("Login successful", { 
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
-      }
-    }));
+    res.status(200).json(
+      successResponse("Login successful", {
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt,
+        },
+      })
+    );
   } catch (error) {
     res.status(500).json(errorResponse("Internal server error"));
   }

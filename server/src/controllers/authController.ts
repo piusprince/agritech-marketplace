@@ -7,7 +7,10 @@ import { UserRole } from "../constants/userRoles";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { firstName, lastName, name, email, password, role } = req.body;
+    
+    // Handle both name formats
+    const fullName = name || `${firstName} ${lastName}`.trim();
 
     const existingUser = await User.findOne({ email });
 
@@ -25,13 +28,20 @@ export const register = async (req: Request, res: Response) => {
       role: role || UserRole.BUYER,
     });
 
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, {
+      expiresIn: "1d",
+    });
+
     res.status(201).json(
       successResponse("User registered successfully", {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        createdAt: user.createdAt,
+        token,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          createdAt: user.createdAt,
+        }
       })
     );
   } catch (error) {
@@ -59,7 +69,16 @@ export const login = async (req: Request, res: Response) => {
       expiresIn: "1d",
     });
 
-    res.status(200).json(successResponse("Login successful", { token }));
+    res.status(200).json(successResponse("Login successful", { 
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        createdAt: user.createdAt,
+      }
+    }));
   } catch (error) {
     res.status(500).json(errorResponse("Internal server error"));
   }

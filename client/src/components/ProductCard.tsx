@@ -7,19 +7,21 @@ import { Badge } from "./ui/badge";
 
 interface ProductCardProps {
   product: Product;
+  hideContactButton?: boolean;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  hideContactButton = false,
+}: ProductCardProps) => {
   const [showInquiryModal, setShowInquiryModal] = useState(false);
 
-  // Get farmer name - handle both populated and unpopulated farmer field
   const farmerName =
     typeof product.farmer === "string" ? "Farmer" : product.farmer.name;
 
   return (
     <>
-      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-300">
-        {/* Product Image */}
+      <Card className="overflow-hidden bg-white hover:shadow-lg transition-shadow duration-300">
         <div className="h-48 bg-gray-200 relative">
           {product.imageUrl ? (
             <img
@@ -44,7 +46,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
               </svg>
             </div>
           )}
-          {/* Category Badge */}
           <div className="absolute top-2 left-2">
             <Badge className="bg-green-600 text-white">
               {product.category}
@@ -52,7 +53,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </div>
 
-        {/* Product Details */}
         <CardContent className="p-4">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
             {product.title}
@@ -62,7 +62,6 @@ const ProductCard = ({ product }: ProductCardProps) => {
             {product.description}
           </p>
 
-          {/* Price and Quantity */}
           <div className="flex justify-between items-center mb-3">
             <span className="text-2xl font-bold text-green-600">
               ₵{product.price.toFixed(2)}
@@ -83,14 +82,16 @@ const ProductCard = ({ product }: ProductCardProps) => {
           </div>
         </CardContent>
 
-        <CardFooter className="p-4 pt-0">
-          <Button
-            onClick={() => setShowInquiryModal(true)}
-            className="w-full bg-green-600 hover:bg-green-700"
-          >
-            Contact Farmer
-          </Button>
-        </CardFooter>
+        {!hideContactButton && (
+          <CardFooter className="p-4 pt-0">
+            <Button
+              onClick={() => setShowInquiryModal(true)}
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
+              Contact Farmer
+            </Button>
+          </CardFooter>
+        )}
       </Card>
 
       {/* Inquiry Modal */}

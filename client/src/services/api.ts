@@ -3,6 +3,7 @@ import type {
   ApiResponse,
   Product,
   Inquiry,
+  InquiryWithProduct,
   InquiryForm,
   LoginForm,
   RegisterForm,
@@ -99,21 +100,8 @@ export const farmerService = {
     return response.data;
   },
 
-  getMyProducts: async (farmerId: string): Promise<ApiResponse<Product[]>> => {
-    const response = await api.get("/api/products");
-    if (response.data.success && response.data.data) {
-      const myProducts = response.data.data.filter((product: Product) => {
-        const productFarmerId =
-          typeof product.farmer === "string"
-            ? product.farmer
-            : product.farmer.id;
-        return productFarmerId === farmerId;
-      });
-      return {
-        ...response.data,
-        data: myProducts,
-      };
-    }
+  getMyProducts: async (): Promise<ApiResponse<Product[]>> => {
+    const response = await api.get("/api/products/my-products");
     return response.data;
   },
 
@@ -121,6 +109,11 @@ export const farmerService = {
     productId: string
   ): Promise<ApiResponse<Inquiry[]>> => {
     const response = await api.get(`/api/inquiries/${productId}`);
+    return response.data;
+  },
+
+  getAllMyInquiries: async (): Promise<ApiResponse<InquiryWithProduct[]>> => {
+    const response = await api.get("/api/inquiries/my-inquiries");
     return response.data;
   },
 };

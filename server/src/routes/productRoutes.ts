@@ -1,5 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
-import { createProduct, getProducts } from "../controllers/productController";
+import {
+  createProduct,
+  getProducts,
+  getMyProducts,
+} from "../controllers/productController";
 import authMiddleware from "../middlewares/authMiddleware";
 
 import { requireFarmerRole } from "../middlewares/requireFarmerRole";
@@ -149,5 +153,38 @@ router.post(
  *                   type: string
  */
 router.get("/", getProducts);
+
+/**
+ * @openapi
+ * /api/products/my-products:
+ *   get:
+ *     summary: Get current farmer's products
+ *     tags: [Products]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Farmer products retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Farmer products retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/my-products", authMiddleware, requireFarmerRole, getMyProducts);
 
 export default router;

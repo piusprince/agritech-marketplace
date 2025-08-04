@@ -2,9 +2,12 @@ import { NextFunction, Request, Response, Router } from "express";
 import {
   createInquiry,
   getInquiriesByProduct,
+  getMyInquiries,
 } from "../controllers/inquiryController";
 import { inquiryValidator } from "../middlewares/validators/productInquiryValidator";
 import { validationResult } from "express-validator";
+import authMiddleware from "../middlewares/authMiddleware";
+import { requireFarmerRole } from "../middlewares/requireFarmerRole";
 
 const router = Router();
 
@@ -137,5 +140,38 @@ router.post(
  *                   type: string
  */
 router.get("/:productId", getInquiriesByProduct);
+
+/**
+ * @openapi
+ * /api/inquiries/my-inquiries:
+ *   get:
+ *     summary: Get all inquiries for current farmer's products
+ *     tags: [Inquiries]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Farmer inquiries retrieved successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Farmer inquiries retrieved successfully"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Internal server error
+ */
+router.get("/my-inquiries", authMiddleware, requireFarmerRole, getMyInquiries);
 
 export default router;

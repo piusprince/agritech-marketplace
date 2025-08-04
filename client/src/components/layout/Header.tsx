@@ -16,7 +16,7 @@ const Header = () => {
 
   const getDashboardLink = () => {
     if (!user) return "/";
-    return user.role === "farmer" ? "/farmer/dashboard" : "/buyer/dashboard";
+    return user.role === "farmer" ? "/farmer/dashboard" : "/";
   };
 
   return (
@@ -38,7 +38,7 @@ const Header = () => {
                     variant="ghost"
                     className="text-white/90 hover:text-white hover:bg-white/10"
                   >
-                    Dashboard
+                    {user?.role === "farmer" ? "Dashboard" : "Home"}
                   </Button>
                 </Link>
                 <span className="text-white/70 text-sm">{user?.name}</span>

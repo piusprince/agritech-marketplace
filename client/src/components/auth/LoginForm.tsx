@@ -16,7 +16,7 @@ import type { LoginForm as LoginFormType } from "../../types";
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  rememberMe: z.boolean().default(false),
+  rememberMe: z.boolean(),
 });
 
 interface LoginFormProps {
@@ -76,7 +76,7 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
         if (response.data.user.role === "farmer") {
           navigate("/farmer/dashboard");
         } else {
-          navigate("/buyer/dashboard");
+          navigate("/");
         }
       } else {
         toast.error(response.message || "Login failed. Please try again.");

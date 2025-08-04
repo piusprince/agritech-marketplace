@@ -56,3 +56,26 @@ export const getProducts = async (req: AuthenticatedRequest, res: Response) => {
     res.status(500).json(errorResponse("Internal server error"));
   }
 };
+
+export const getMyProducts = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  try {
+    if (!req.user || !req.user.id) {
+      return res.status(401).json(errorResponse("Unauthorized"));
+    }
+
+    const products = await Product.find({ farmer: req.user.id }).populate(
+      "farmer",
+      "name email"
+    );
+    res
+      .status(200)
+      .json(
+        successResponse("Farmer products retrieved successfully", products)
+      );
+  } catch (error) {
+    res.status(500).json(errorResponse("Internal server error"));
+  }
+};

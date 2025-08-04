@@ -13,9 +13,15 @@ export interface User {
   createdAt: string;
 }
 
+export interface FarmerInfo {
+  _id: string;
+  name: string;
+  email: string;
+}
+
 export interface Product {
   _id: string;
-  farmer: User | string;
+  farmer: FarmerInfo | string;
   title: string;
   description: string;
   price: number;
@@ -29,6 +35,18 @@ export interface Product {
 export interface Inquiry {
   id: string;
   product: string;
+  buyerEmail: string;
+  message: string;
+  createdAt: string;
+}
+
+export interface InquiryWithProduct {
+  id: string;
+  product: {
+    _id: string;
+    title: string;
+    category: string;
+  };
   buyerEmail: string;
   message: string;
   createdAt: string;

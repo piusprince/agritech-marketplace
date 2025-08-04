@@ -7,7 +7,6 @@ import HeroSection from "./components/hero/HeroSection";
 import ProductsSection from "./components/sections/ProductsSection";
 import AuthPage from "./components/auth/AuthPage";
 import FarmerDashboard from "./components/farmer/FarmerDashboard";
-import BuyerDashboard from "./components/buyer/BuyerDashboard";
 import "./App.css";
 
 const queryClient = new QueryClient({
@@ -45,14 +44,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route
-            path="/buyer/dashboard"
-            element={
-              <ProtectedRoute requiredRole="buyer">
-                <BuyerDashboard />
-              </ProtectedRoute>
-            }
-          />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>

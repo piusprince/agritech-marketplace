@@ -81,18 +81,15 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       ) {
         toast.success("Account created successfully! Welcome to FarmDirect.");
 
-        // Store token and user data
         sessionStorage.setItem("auth_token", response.data.token);
         sessionStorage.setItem("auth_user", JSON.stringify(response.data.user));
 
-        // Update auth context
         login(response.data);
 
-        // Navigate based on user role
         if (response.data.user.role === "farmer") {
           navigate("/farmer/dashboard");
         } else {
-          navigate("/buyer/dashboard");
+          navigate("/");
         }
       } else {
         toast.error(

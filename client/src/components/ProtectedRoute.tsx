@@ -26,8 +26,7 @@ export function ProtectedRoute({
   }
 
   if (requiredRole && user?.role !== requiredRole) {
-    const redirectPath =
-      user?.role === "farmer" ? "/farmer/dashboard" : "/buyer/dashboard";
+    const redirectPath = user?.role === "farmer" ? "/farmer/dashboard" : "/";
     return <Navigate to={redirectPath} replace />;
   }
 

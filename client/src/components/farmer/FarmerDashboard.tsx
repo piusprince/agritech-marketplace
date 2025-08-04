@@ -8,17 +8,21 @@ import { ProductForm } from "./ProductForm";
 import ProductCard from "../ProductCard";
 import { farmerService } from "../../services/api";
 import LoadingSpinner from "../LoadingSpinner";
-import type { Product, Inquiry } from "../../types";
+import type { Product, Inquiry, InquiryWithProduct } from "../../types";
 import { toast } from "sonner";
 
 export default function FarmerDashboard() {
   const { user, logout } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
+  const [allInquiries, setAllInquiries] = useState<InquiryWithProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showProductForm, setShowProductForm] = useState(false);
   const [selectedProductId, setSelectedProductId] = useState<string | null>(
     null
+  );
+  const [activeTab, setActiveTab] = useState<"products" | "inquiries">(
+    "products"
   );
 
   useEffect(() => {
@@ -28,11 +32,17 @@ export default function FarmerDashboard() {
   const loadDashboardData = async () => {
     try {
       setIsLoading(true);
-      if (user?.id) {
-        const productsResponse = await farmerService.getMyProducts(user.id);
-        if (productsResponse.success && productsResponse.data) {
-          setProducts(productsResponse.data);
-        }
+      const [productsResponse, allInquiriesResponse] = await Promise.all([
+        farmerService.getMyProducts(),
+        farmerService.getAllMyInquiries(),
+      ]);
+
+      if (productsResponse.success && productsResponse.data) {
+        setProducts(productsResponse.data);
+      }
+
+      if (allInquiriesResponse.success && allInquiriesResponse.data) {
+        setAllInquiries(allInquiriesResponse.data);
       }
     } catch (error) {
       console.error("Error loading dashboard data:", error);
@@ -125,7 +135,7 @@ export default function FarmerDashboard() {
               <MessageSquare className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{inquiries.length}</div>
+              <div className="text-2xl font-bold">{allInquiries.length}</div>
               <p className="text-xs text-muted-foreground">Buyer inquiries</p>
             </CardContent>
           </Card>
@@ -154,83 +164,183 @@ export default function FarmerDashboard() {
           </Card>
         </div>
 
-        {/* Products Section */}
+        {/* Tabs */}
         <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">My Products</h2>
-            <Button
-              onClick={() => setShowProductForm(true)}
-              className="bg-green-600 hover:bg-green-700"
-            >
-              <Plus className="h-4 w-4 mr-2" />
-              Add Product
-            </Button>
+          <div className="border-b border-gray-200">
+            <nav className="-mb-px flex space-x-8">
+              <button
+                onClick={() => setActiveTab("products")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "products"
+                    ? "border-green-500 text-green-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                My Products ({products.length})
+              </button>
+              <button
+                onClick={() => setActiveTab("inquiries")}
+                className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "inquiries"
+                    ? "border-green-500 text-green-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                All Inquiries ({allInquiries.length})
+              </button>
+            </nav>
           </div>
-
-          {products.length === 0 ? (
-            <Card>
-              <CardContent className="text-center py-12">
-                <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  No products yet
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Start by adding your first product to the marketplace
-                </p>
-                <Button
-                  onClick={() => setShowProductForm(true)}
-                  className="bg-green-600 hover:bg-green-700"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Your First Product
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                <div key={product._id} className="relative">
-                  <ProductCard product={product} />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => loadInquiriesForProduct(product._id)}
-                    className="mt-2 w-full"
-                  >
-                    <MessageSquare className="h-4 w-4 mr-2" />
-                    View Inquiries
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
-        {/* Inquiries Section */}
-        {selectedProductId && inquiries.length > 0 && (
+        {/* Products Tab */}
+        {activeTab === "products" && (
           <div className="mb-8">
-            <h3 className="text-xl font-bold text-gray-900 mb-4">
-              Product Inquiries ({inquiries.length})
-            </h3>
-            <div className="space-y-4">
-              {inquiries.map((inquiry) => (
-                <Card key={inquiry.id}>
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <CardTitle className="text-sm">
-                        From: {inquiry.buyerEmail}
-                      </CardTitle>
-                      <span className="text-xs text-gray-500">
-                        {new Date(inquiry.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-gray-700">{inquiry.message}</p>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">My Products</h2>
+              <Button
+                onClick={() => setShowProductForm(true)}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                <Plus className="h-4 w-4 mr-2" />
+                Add Product
+              </Button>
             </div>
+
+            {products.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-12">
+                  <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    No products yet
+                  </h3>
+                  <p className="text-gray-600 mb-4">
+                    Start by adding your first product to the marketplace
+                  </p>
+                  <Button
+                    onClick={() => setShowProductForm(true)}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Add Your First Product
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {products.map((product) => (
+                  <div key={product._id} className="relative">
+                    <ProductCard product={product} hideContactButton={true} />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => loadInquiriesForProduct(product._id)}
+                      className="mt-2 w-full"
+                    >
+                      <MessageSquare className="h-4 w-4 mr-2" />
+                      View Inquiries
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Product Inquiries Section - shown when a product is selected */}
+            {selectedProductId && (
+              <div className="mt-8">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">
+                  Product Inquiries ({inquiries.length})
+                </h3>
+                {inquiries.length > 0 ? (
+                  <div className="space-y-4">
+                    {inquiries.map((inquiry) => (
+                      <Card key={inquiry.id}>
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-sm">
+                              From: {inquiry.buyerEmail}
+                            </CardTitle>
+                            <span className="text-xs text-gray-500">
+                              {new Date(inquiry.createdAt).toLocaleDateString()}
+                            </span>
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-gray-700">{inquiry.message}</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="text-center py-8">
+                    <CardContent>
+                      <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <MessageSquare className="w-8 h-8 text-gray-400" />
+                      </div>
+                      <h4 className="text-lg font-medium text-gray-900 mb-2">
+                        No Inquiries Yet
+                      </h4>
+                      <p className="text-gray-500 max-w-sm mx-auto">
+                        This product hasn't received any inquiries from buyers
+                        yet. Keep your product details updated to attract more
+                        interest!
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* All Inquiries Tab */}
+        {activeTab === "inquiries" && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              All Inquiries
+            </h2>
+            {allInquiries.length > 0 ? (
+              <div className="space-y-4">
+                {allInquiries.map((inquiry) => (
+                  <Card key={inquiry.id}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <CardTitle className="text-sm">
+                            From: {inquiry.buyerEmail}
+                          </CardTitle>
+                          <p className="text-xs text-green-600 mt-1">
+                            Product: {inquiry.product.title} (
+                            {inquiry.product.category})
+                          </p>
+                        </div>
+                        <span className="text-xs text-gray-500">
+                          {new Date(inquiry.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-gray-700">{inquiry.message}</p>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card className="text-center py-12">
+                <CardContent>
+                  <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                    <MessageSquare className="w-8 h-8 text-gray-400" />
+                  </div>
+                  <h4 className="text-lg font-medium text-gray-900 mb-2">
+                    No Inquiries Yet
+                  </h4>
+                  <p className="text-gray-500 max-w-sm mx-auto">
+                    You haven't received any inquiries yet. Make sure your
+                    products are attractive and well-described to get more buyer
+                    interest!
+                  </p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         )}
       </div>

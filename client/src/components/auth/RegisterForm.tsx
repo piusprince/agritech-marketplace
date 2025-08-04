@@ -11,8 +11,6 @@ import { Label } from "../ui/label";
 import { Checkbox } from "../ui/checkbox";
 import { authService } from "../../services/api";
 import { useAuth } from "../../contexts/AuthContext";
-import type { RegisterForm as RegisterFormType } from "../../types";
-
 const registerSchema = z
   .object({
     firstName: z.string().min(2, "First name must be at least 2 characters"),
@@ -25,12 +23,14 @@ const registerSchema = z
     agreeToTerms: z.boolean().refine((val) => val === true, {
       message: "You must agree to the terms and conditions",
     }),
-    subscribeNewsletter: z.boolean().default(false),
+    subscribeNewsletter: z.boolean(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   });
+
+type RegisterFormType = z.infer<typeof registerSchema>;
 
 interface RegisterFormProps {
   onSwitchToLogin: () => void;
